@@ -6,8 +6,9 @@ using namespace std;
 
 
 class V3 {
-  float xyz[3];
+  
 public:
+  float xyz[3];
   V3(float x, float y, float z);
   V3() {};
   float& operator[](int i);

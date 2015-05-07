@@ -75,7 +75,6 @@ void TMesh::LoadBin(char *fname) {
 
 }
 
-
 void TMesh::RotateAboutArbitraryAxis(V3 O, V3 a, float theta) {
 
   for (int vi = 0; vi < vertsN; vi++) {
@@ -85,7 +84,6 @@ void TMesh::RotateAboutArbitraryAxis(V3 O, V3 a, float theta) {
   }
 
 }
-
 
 V3 TMesh::GetCenter() {
 
@@ -115,12 +113,12 @@ V3 TMesh::GetCenterMass() {
 
 }
 
-void TMesh::SetRectangle(V3 center, float a, float b, 
-  V3 *colors, FrameBuffer *cb) {
+void TMesh::SetRectangle(V3 center, float a, float b) {
 
   vertsN = 4;
   verts = new V3[vertsN];
   cols = new V3[vertsN];
+  normals = new V3[vertsN];
 
   int i = 0;
   verts[i++] = center + V3(-a/2.0f, +b/2.0f, 0.0f);
@@ -129,7 +127,8 @@ void TMesh::SetRectangle(V3 center, float a, float b,
   verts[i++] = center + V3(+a/2.0f, +b/2.0f, 0.0f);
 
   for (int i = 0; i < 4; i++) {
-    cols[i] = colors[i];
+    cols[i] = V3(0, 1, 0);
+	normals[i] = V3(0, 0, 1);
   }
 
   trisN = 2;
@@ -143,17 +142,6 @@ void TMesh::SetRectangle(V3 center, float a, float b,
   tris[i++] = 0;
   tris[i++] = 2;
   tris[i++] = 3;
-
-  if (cb) {
-    texture = cb;
-    tcs = new V3[vertsN];
-    tcs[0] = V3(0.0f, 0.0f, 0.0f);
-    tcs[1] = V3(0.0f, 1.0f, 0.0f);
-    tcs[2] = V3(1.0f, 1.0f, 0.0f);
-    tcs[3] = V3(1.0f, 0.0f, 0.0f);
-  }
-
-
 }
 
 void TMesh::RenderHW() {
@@ -173,5 +161,262 @@ void TMesh::RenderHW() {
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+}
 
+void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
+	float distance[5];
+	int sequence[5];
+	V3 topCenter, buttomCenter, sideOneCenter, sideTwoCenter, sideThreeCenter;
+	topCenter = (verts[0]+verts[1]+verts[2])/3;
+	buttomCenter = (verts[3]+verts[4]+verts[5])/3;
+	sideOneCenter = (verts[6]+verts[7]+verts[8]+verts[9])/4;
+	sideTwoCenter = (verts[10]+verts[11]+verts[12]+verts[13])/4;
+	sideThreeCenter = (verts[14]+verts[15]+verts[16]+verts[17])/4;
+	distance[0] = (eye - topCenter).Length();
+	distance[1] = (eye - buttomCenter).Length();
+	distance[2] = (eye - sideOneCenter).Length();
+	distance[3] = (eye - sideTwoCenter).Length();
+	distance[4] = (eye - sideThreeCenter).Length();
+	
+	int tempI = 0;
+	float tempD = 0;
+	for(int i=0; i<5; i++){
+		if(tempD<distance[i]){
+			tempI = i;
+			tempD = distance[i];
+		}
+	}
+	//find 0
+	sequence[0] = tempI;
+	distance[tempI] = 0;
+
+	tempI = 0;
+	tempD = 0;
+	for(int i=0; i<5; i++){
+		if(tempD<distance[i]){
+			tempI = i;
+			tempD = distance[i];
+		}
+	}
+	//find 1
+	sequence[1] = tempI;
+	distance[tempI] = 0;
+
+	tempI = 0;
+	tempD = 0;
+	for(int i=0; i<5; i++){
+		if(tempD<distance[i]){
+			tempI = i;
+			tempD = distance[i];
+		}
+	}
+	//find 2
+	sequence[2] = tempI;
+	distance[tempI] = 0;
+
+	tempI = 0;
+	tempD = 0;
+	for(int i=0; i<5; i++){
+		if(tempD<distance[i]){
+			tempI = i;
+			tempD = distance[i];
+		}
+	}
+	//find 3
+	sequence[3] = tempI;
+	distance[tempI] = 0;
+
+	tempI = 0;
+	tempD = 0;
+	for(int i=0; i<5; i++){
+		if(tempD<distance[i]){
+			tempI = i;
+			tempD = distance[i];
+		}
+	}
+	//find 4
+	sequence[4] = tempI;
+	distance[tempI] = 0;
+	cout<<sequence[0]<<" "<<sequence[1]<<" "<<sequence[2]<<" "<<sequence[3]<<" "<<sequence[4]<<endl;
+
+	for(int i=0; i<5; i++){
+	switch (sequence[i])
+	{
+	case 0:
+		cout<<"000"<<endl;
+		glBegin(GL_TRIANGLES);
+		glNormal3f(normals[0].xyz[0], normals[0].xyz[1], normals[0].xyz[2]);
+		glVertex3f(verts[0].xyz[0], verts[0].xyz[1], verts[0].xyz[2]);
+		glNormal3f(normals[1].xyz[0], normals[1].xyz[1], normals[1].xyz[2]);
+        glVertex3f(verts[1].xyz[0], verts[1].xyz[1], verts[1].xyz[2]);
+		glNormal3f(normals[2].xyz[0], normals[2].xyz[1], normals[2].xyz[2]);
+        glVertex3f(verts[2].xyz[0], verts[2].xyz[1], verts[2].xyz[2]);
+		glEnd();
+		break;
+
+	case 1:
+		cout<<"111"<<endl;
+		glBegin(GL_TRIANGLES);
+		glNormal3f(normals[3].xyz[0], normals[3].xyz[1], normals[3].xyz[2]);
+		glVertex3f(verts[3].xyz[0], verts[3].xyz[1], verts[3].xyz[2]);
+		glNormal3f(normals[4].xyz[0], normals[4].xyz[1], normals[4].xyz[2]);
+        glVertex3f(verts[4].xyz[0], verts[4].xyz[1], verts[4].xyz[2]);
+		glNormal3f(normals[5].xyz[0], normals[5].xyz[1], normals[5].xyz[2]);
+        glVertex3f(verts[5].xyz[0], verts[5].xyz[1], verts[5].xyz[2]);
+		glEnd();
+		break;
+
+	case 2:
+		cout<<"222"<<endl;
+		glBegin(GL_TRIANGLES);
+		glNormal3f(normals[6].xyz[0], normals[6].xyz[1], normals[6].xyz[2]);
+		glVertex3f(verts[6].xyz[0], verts[6].xyz[1], verts[6].xyz[2]);
+		glNormal3f(normals[7].xyz[0], normals[7].xyz[1], normals[7].xyz[2]);
+        glVertex3f(verts[7].xyz[0], verts[7].xyz[1], verts[7].xyz[2]);
+		glNormal3f(normals[8].xyz[0], normals[8].xyz[1], normals[8].xyz[2]);
+        glVertex3f(verts[8].xyz[0], verts[8].xyz[1], verts[8].xyz[2]);
+
+		glNormal3f(normals[8].xyz[0], normals[8].xyz[1], normals[8].xyz[2]);
+		glVertex3f(verts[8].xyz[0], verts[8].xyz[1], verts[8].xyz[2]);
+		glNormal3f(normals[9].xyz[0], normals[9].xyz[1], normals[9].xyz[2]);
+        glVertex3f(verts[9].xyz[0], verts[9].xyz[1], verts[9].xyz[2]);
+		glNormal3f(normals[6].xyz[0], normals[6].xyz[1], normals[6].xyz[2]);
+        glVertex3f(verts[6].xyz[0], verts[6].xyz[1], verts[6].xyz[2]);
+		glEnd();
+		break;
+	
+	case 3:
+		cout<<"333"<<endl;
+		glBegin(GL_TRIANGLES);
+		glNormal3f(normals[10].xyz[0], normals[10].xyz[1], normals[10].xyz[2]);
+		glVertex3f(verts[10].xyz[0], verts[10].xyz[1], verts[10].xyz[2]);
+		glNormal3f(normals[11].xyz[0], normals[11].xyz[1], normals[11].xyz[2]);
+        glVertex3f(verts[11].xyz[0], verts[11].xyz[1], verts[11].xyz[2]);
+		glNormal3f(normals[12].xyz[0], normals[12].xyz[1], normals[12].xyz[2]);
+        glVertex3f(verts[12].xyz[0], verts[12].xyz[1], verts[12].xyz[2]);
+
+		glNormal3f(normals[12].xyz[0], normals[12].xyz[1], normals[12].xyz[2]);
+		glVertex3f(verts[12].xyz[0], verts[12].xyz[1], verts[12].xyz[2]);
+		glNormal3f(normals[13].xyz[0], normals[13].xyz[1], normals[13].xyz[2]);
+        glVertex3f(verts[13].xyz[0], verts[13].xyz[1], verts[13].xyz[2]);
+		glNormal3f(normals[10].xyz[0], normals[10].xyz[1], normals[10].xyz[2]);
+        glVertex3f(verts[10].xyz[0], verts[10].xyz[1], verts[10].xyz[2]);
+		glEnd();
+		break;
+
+	case 4:
+		cout<<"444"<<endl;
+		glBegin(GL_TRIANGLES);
+		glNormal3f(normals[14].xyz[0], normals[14].xyz[1], normals[14].xyz[2]);
+		glVertex3f(verts[14].xyz[0], verts[14].xyz[1], verts[14].xyz[2]);
+		glNormal3f(normals[15].xyz[0], normals[15].xyz[1], normals[15].xyz[2]);
+        glVertex3f(verts[15].xyz[0], verts[15].xyz[1], verts[15].xyz[2]);
+		glNormal3f(normals[16].xyz[0], normals[16].xyz[1], normals[16].xyz[2]);
+        glVertex3f(verts[16].xyz[0], verts[16].xyz[1], verts[16].xyz[2]);
+
+		glNormal3f(normals[16].xyz[0], normals[16].xyz[1], normals[16].xyz[2]);
+		glVertex3f(verts[16].xyz[0], verts[16].xyz[1], verts[16].xyz[2]);
+		glNormal3f(normals[17].xyz[0], normals[17].xyz[1], normals[17].xyz[2]);
+        glVertex3f(verts[17].xyz[0], verts[17].xyz[1], verts[17].xyz[2]);
+		glNormal3f(normals[14].xyz[0], normals[14].xyz[1], normals[14].xyz[2]);
+        glVertex3f(verts[14].xyz[0], verts[14].xyz[1], verts[14].xyz[2]);
+		glEnd();
+		break;
+	}
+	}
+	
+
+}
+
+void TMesh::SetDispersivePrism(float height, float side){
+  float triangleHeight = side*sqrt(3)/2;
+  height = height/2;
+  side = side/2;
+  
+  vertsN = 18;
+  verts = new V3[vertsN];
+  cols = new V3[vertsN];
+  normals = new V3[vertsN];
+
+  for (int i = 0; i < 18; i++) {
+    cols[i] = V3(0.8f, 0.8f, 0.8f);
+  }
+
+  int i = 0;
+  verts[i++] =  V3( 0,     height, 0);
+  normals[i] = V3(0, 1, 0);
+  verts[i++] =  V3( side,  height, triangleHeight);
+  normals[i] = V3(0, 1, 0);
+  verts[i++] =  V3(-side,  height, triangleHeight);//top triangle 0 1 2
+  normals[i] = V3(0, 1, 0);
+
+
+  verts[i++] =  V3( 0,    -height, 0);
+  normals[i] = V3(0, -1, 0);
+  verts[i++] =  V3( side, -height, triangleHeight);
+  normals[i] = V3(0, -1, 0);
+  verts[i++] =  V3(-side, -height, triangleHeight);//buttom triangle 3 4 5
+  normals[i] = V3(0, -1, 0);
+
+  verts[i++] =  V3( 0,     height, 0);
+  normals[i] = V3(sqrt(3), 0, -1);
+  verts[i++] =  V3( side,  height, triangleHeight);
+  normals[i] = V3(sqrt(3), 0, -1);
+  verts[i++] =  V3( side, -height, triangleHeight);
+  normals[i] = V3(sqrt(3), 0, -1);
+  verts[i++] =  V3( 0,    -height, 0);
+  normals[i] = V3(sqrt(3), 0, -1);//first quad 6 7 8 9
+
+  verts[i++] =  V3( side,  height, triangleHeight); 
+  normals[i] = V3(0, 0, 1);
+  verts[i++] =  V3(-side,  height, triangleHeight);
+  normals[i] = V3(0, 0, 1);
+  verts[i++] =  V3(-side, -height, triangleHeight);
+  normals[i] = V3(0, 0, 1);
+  verts[i++] =  V3( side, -height, triangleHeight);
+  normals[i] = V3(0, 0, 1);//second quad 10 11 12 13
+
+  verts[i++] =  V3(-side,  height, triangleHeight);
+  normals[i] = V3(-sqrt(3), 0, -1);
+  verts[i++] =  V3( 0,     height, 0);
+  normals[i] = V3(-sqrt(3), 0, -1);
+  verts[i++] =  V3( 0,    -height, 0);
+  normals[i] = V3(-sqrt(3), 0, -1);
+  verts[i++] =  V3(-side, -height, triangleHeight);
+  normals[i] = V3(-sqrt(3), 0, -1);//third quad 14 15 16 17
+
+  trisN = 8;
+  tris = new unsigned int[3*trisN];
+  i = 0;
+  tris[i++] = 0;
+  tris[i++] = 1;
+  tris[i++] = 2;
+
+  tris[i++] = 3;
+  tris[i++] = 4;
+  tris[i++] = 5;
+
+  tris[i++] = 6;
+  tris[i++] = 7;
+  tris[i++] = 8;
+
+  tris[i++] = 8;
+  tris[i++] = 9;
+  tris[i++] = 6;
+
+  tris[i++] = 10;
+  tris[i++] = 11;
+  tris[i++] = 12;
+
+  tris[i++] = 12;
+  tris[i++] = 13;
+  tris[i++] = 10;
+
+  tris[i++] = 14;
+  tris[i++] = 15;
+  tris[i++] = 16;
+
+  tris[i++] = 16;
+  tris[i++] = 17;
+  tris[i++] = 14;
 }

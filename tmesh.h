@@ -21,8 +21,8 @@ public:
   void RotateAboutArbitraryAxis(V3 O, V3 a, float theta);
   V3 GetCenter();
   V3 GetCenterMass();
-  void SetRectangle(V3 center, float a, 
-    float b, V3 *colors,
-    FrameBuffer *cb = 0);
+  void SetRectangle(V3 center, float a, float b);
   void RenderHW();
+  void RenderDP(V3 eye);
+  void SetDispersivePrism(float height, float side);
 };

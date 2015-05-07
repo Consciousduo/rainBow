@@ -43,8 +43,8 @@ int FrameBuffer::handle(int event)  {
 void FrameBuffer::KeyboardHandle() {
 
   PPC *ppc = scene->ppc;
-  float rstep = 2.0f; // rotation step for camera; should be adjustable;
-  float tstep = 5.0f; // translation step for camera; should be adjustable;
+  float rstep = 1.0f; // rotation step for camera; should be adjustable;
+  float tstep = 1.0f; // translation step for camera; should be adjustable;
   int key = Fl::event_key();
   switch (key) {
     case FL_Left: {

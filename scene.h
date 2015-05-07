@@ -17,12 +17,10 @@ public:
 
   FrameBuffer *hwfb; // HW framebuffer  
   PPC *ppc; // planar pinhole camera
-
   GUI * gui; // graphical user interface
-
   TMesh *tmeshes; // geometry
+  TMesh DispersivePrism;
   int tmeshesN;
-
   CGInterface *cgi;
   ShaderOneInterface *soi;
 
@@ -31,9 +29,6 @@ public:
   void Render();
   void RenderHW();
   void Render(FrameBuffer *cfb, PPC *cppc);
-
-  FrameBuffer *cb;
-
 };
 
 extern Scene *scene;
