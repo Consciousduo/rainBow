@@ -145,6 +145,8 @@ void TMesh::SetRectangle(V3 center, float a, float b) {
 }
 
 void TMesh::RenderHW() {
+  glEnable(GL_COLOR_MATERIAL);
+  glColorMaterial(GL_FRONT, GL_DIFFUSE);
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, (float*)verts);
@@ -161,9 +163,26 @@ void TMesh::RenderHW() {
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+
+  glDisable(GL_COLOR_MATERIAL);
 }
 
 void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
+ //Material set up
+  GLfloat mKa[] = { 0.0, 0.0, 0.0, 0.5 };
+  GLfloat mKd[] = { 0.6, 0.2, 0.2, 0.5 };
+  GLfloat mKs[] = { 1.0, 1.0, 1.0, 0.5 };
+  GLfloat mKe[] = { 0.0, 0.0, 0.0, 0.5 };
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mKa);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mKd);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mKs);
+  glMaterialfv(GL_FRONT, GL_EMISSION, mKe);
+  glMaterialf(GL_FRONT, GL_SHININESS, 120);
+
+  glDisable(GL_CULL_FACE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	float distance[5];
 	int sequence[5];
 	V3 topCenter, buttomCenter, sideOneCenter, sideTwoCenter, sideThreeCenter;
@@ -243,7 +262,6 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 	switch (sequence[i])
 	{
 	case 0:
-		cout<<"000"<<endl;
 		glBegin(GL_TRIANGLES);
 		glNormal3f(normals[0].xyz[0], normals[0].xyz[1], normals[0].xyz[2]);
 		glVertex3f(verts[0].xyz[0], verts[0].xyz[1], verts[0].xyz[2]);
@@ -255,7 +273,6 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 		break;
 
 	case 1:
-		cout<<"111"<<endl;
 		glBegin(GL_TRIANGLES);
 		glNormal3f(normals[3].xyz[0], normals[3].xyz[1], normals[3].xyz[2]);
 		glVertex3f(verts[3].xyz[0], verts[3].xyz[1], verts[3].xyz[2]);
@@ -267,7 +284,6 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 		break;
 
 	case 2:
-		cout<<"222"<<endl;
 		glBegin(GL_TRIANGLES);
 		glNormal3f(normals[6].xyz[0], normals[6].xyz[1], normals[6].xyz[2]);
 		glVertex3f(verts[6].xyz[0], verts[6].xyz[1], verts[6].xyz[2]);
@@ -286,7 +302,6 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 		break;
 	
 	case 3:
-		cout<<"333"<<endl;
 		glBegin(GL_TRIANGLES);
 		glNormal3f(normals[10].xyz[0], normals[10].xyz[1], normals[10].xyz[2]);
 		glVertex3f(verts[10].xyz[0], verts[10].xyz[1], verts[10].xyz[2]);
@@ -305,7 +320,6 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 		break;
 
 	case 4:
-		cout<<"444"<<endl;
 		glBegin(GL_TRIANGLES);
 		glNormal3f(normals[14].xyz[0], normals[14].xyz[1], normals[14].xyz[2]);
 		glVertex3f(verts[14].xyz[0], verts[14].xyz[1], verts[14].xyz[2]);
@@ -324,8 +338,8 @@ void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
 		break;
 	}
 	}
-	
-
+  glEnable(GL_CULL_FACE);
+  glDisable(GL_BLEND);
 }
 
 void TMesh::SetDispersivePrism(float height, float side){
@@ -339,7 +353,7 @@ void TMesh::SetDispersivePrism(float height, float side){
   normals = new V3[vertsN];
 
   for (int i = 0; i < 18; i++) {
-    cols[i] = V3(0.8f, 0.8f, 0.8f);
+    cols[i] = V3(1.0f, 0.0f, 0.0f);
   }
 
   int i = 0;

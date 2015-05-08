@@ -53,6 +53,7 @@ void Scene::Render() {
 }
 
 void Scene::RenderHW() {
+  //light set up
   // global ambient light
   GLfloat aGa[] = { 0.0, 0.0, 0.0, 0.0 };
   
@@ -93,21 +94,10 @@ void Scene::RenderHW() {
   GLfloat lKd7[] = { diffuse, diffuse, diffuse, 1.0 };
   GLfloat lKs7[] = { specular, specular, specular, 1.0 };
 
-  GLfloat mKa[] = { 0.0, 0.0, 0.0, 0.5 };
-  GLfloat mKd[] = { 0.6, 0.6, 0.6, 0.5 };
-  GLfloat mKs[] = { 1.0, 1.0, 1.0, 0.5 };
-  GLfloat mKe[] = { 0.0, 0.0, 0.0, 0.5 };
-
   /* set up lighting */
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, aGa);
   glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-
-  glMaterialfv(GL_FRONT, GL_AMBIENT, mKa);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, mKd);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mKs);
-  glMaterialfv(GL_FRONT, GL_EMISSION, mKe);
-  glMaterialf(GL_FRONT, GL_SHININESS, 120);
 
   // light positions and directions
   GLfloat lP0[] = { 30.0, 30.0, 30.0, 1.0 };
@@ -118,11 +108,6 @@ void Scene::RenderHW() {
   GLfloat lP5[] = { 30.0, -30.0, -30.0, 1.0 };
   GLfloat lP6[] = { -30.0, -30.0, 30.0, 1.0 };
   GLfloat lP7[] = { -30.0, -30.0, -30.0, 1.0 };
-  
-  /* set up lighting */
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, aGa);
-  glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
     
   // macro to set up light i
   #define LIGHTSETUP(i)\
@@ -138,10 +123,12 @@ void Scene::RenderHW() {
   LIGHTSETUP (3);
 
   // enable 
+  glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_POLYGON_SMOOTH);
   glEnable(GL_LINE_SMOOTH);
-  glDisable(GL_LIGHTING);
+  glEnable(GL_LIGHTING);
+
 
   if (!cgi) {
     cgi = new CGInterface();
@@ -162,19 +149,12 @@ void Scene::RenderHW() {
    for (int tmi = 0; tmi < tmeshesN; tmi++) {
     if (!tmeshes[tmi].enabled)
       continue;
-    tmeshes[tmi].RenderHW();
+		tmeshes[tmi].RenderHW();
   }
 
 
-  glDisable(GL_CULL_FACE);
-  glEnable(GL_LIGHTING);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  //DispersivePrism.RenderHW();
+
   DispersivePrism.RenderDP(ppc->C);
-  glDisable(GL_BLEND);
-  glEnable(GL_CULL_FACE);
-  glDisable(GL_LIGHTING);
 
 
   if (cgi) {
