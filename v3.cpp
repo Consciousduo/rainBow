@@ -225,3 +225,46 @@ V3 V3::RotateThisVectorAboutAxis(V3 a, float theta) {
 
 }
 
+V3 V3::TranslateThisPointDown(float units){
+	 V3 ret;
+	 ret.xyz[0]=xyz[0];
+	 ret.xyz[1]=xyz[1]-units;
+	 ret.xyz[2]=xyz[2];
+	 return ret;
+}
+ V3 V3::TranslateThisPointUp(float units){
+	  V3 ret;
+	 ret.xyz[0]=xyz[0];
+	 ret.xyz[1]=xyz[1]+units;
+	 ret.xyz[2]=xyz[2];
+	 return ret;
+ }
+ V3 V3::TranslateThisPointLeft(float units){
+	  V3 ret;
+	 ret.xyz[0]=xyz[0]-units;
+	 ret.xyz[1]=xyz[1];
+	 ret.xyz[2]=xyz[2];
+	 return ret;
+ }
+ V3 V3::TranslateThisPointRight(float units){
+	  V3 ret;
+	 ret.xyz[0]=xyz[0]+units;
+	 ret.xyz[1]=xyz[1];
+	 ret.xyz[2]=xyz[2];
+	 return ret;
+ }
+ V3 V3::TranslateThisPointFoward(float units){
+	  V3 ret;
+	 ret.xyz[0]=xyz[0];
+	 ret.xyz[1]=xyz[1];
+	 ret.xyz[2]=xyz[2]+units;
+	 return ret;
+ }
+ V3 V3::TranslateThisPointBackward(float units){
+	  V3 ret;
+	 ret.xyz[0]=xyz[0];
+	 ret.xyz[1]=xyz[1];
+	 ret.xyz[2]=xyz[2]-units;
+	 return ret;
+ }
+

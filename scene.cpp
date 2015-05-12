@@ -28,11 +28,18 @@ Scene::Scene() {
   // position UI window
   gui->uiw->position(hwfb->w+u0*2, v0);
   
-  DispersivePrism.SetDispersivePrism(30.0f, 20.0f);
-  DispersivePrism.RotateAboutArbitraryAxis(V3(0,0,0), V3(0,1,0), 30);
+  PrismN = 1;
+  DispersivePrism = new TMesh[PrismN];
+  for(int i=0; i<PrismN; i++){
+  DispersivePrism[i].SetDispersivePrism(30.0f, 20.0f);
+  DispersivePrism[i].RotateAboutArbitraryAxis(V3(0,0,0), V3(0,1,0), 30);
+  DispersivePrism[i].TranslateBackward(22*i);
+  }
+
   tmeshesN = 1;
   tmeshes = new TMesh[tmeshesN];
-  tmeshes[0].SetRectangle(V3(0, 0, -50), 30, 30);
+  tmeshes[0].LoadBin("geometry/teapot57K.bin");
+  tmeshes[0].TranslateBackward(150);
   tmeshes[0].enabled = true;
 
   // create camera
@@ -153,8 +160,7 @@ void Scene::RenderHW() {
   }
 
 
-
-  DispersivePrism.RenderDP(ppc->C);
+   
 
 
   if (cgi) {
@@ -164,6 +170,9 @@ void Scene::RenderHW() {
   }
 
  //render using shader
+   for(int i=(PrismN-1); i>=0; i--)
+   DispersivePrism[i].RenderDP(ppc->C);
+ 
 
  
 

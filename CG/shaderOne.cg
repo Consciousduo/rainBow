@@ -21,7 +21,7 @@ VertexDataOutput VertexMain(VertexDataInput vdi,
 
   VertexDataOutput ret;
   ret.projv = mul(modelViewProj, vdi.vertex);
-  ret.color = float4(vdi.color, 1.0f);
+  ret.color = float4(vdi.color, 0.5f);
   ret.vertex = vdi.vertex.xyz;
   ret.normal = vdi.normal;
   return ret;

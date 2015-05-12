@@ -19,7 +19,8 @@ public:
   PPC *ppc; // planar pinhole camera
   GUI * gui; // graphical user interface
   TMesh *tmeshes; // geometry
-  TMesh DispersivePrism;
+  TMesh* DispersivePrism;
+  int PrismN;
   int tmeshesN;
   CGInterface *cgi;
   ShaderOneInterface *soi;

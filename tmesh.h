@@ -25,4 +25,10 @@ public:
   void RenderHW();
   void RenderDP(V3 eye);
   void SetDispersivePrism(float height, float side);
+   void TranslateDown(float units);
+  void TranslateUp(float units);
+  void TranslateLeft(float units);
+  void TranslateRight(float units);
+  void TranslateForward(float units);
+  void TranslateBackward(float units);
 };

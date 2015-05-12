@@ -169,10 +169,10 @@ void TMesh::RenderHW() {
 
 void TMesh::RenderDP(V3 eye){ //do not support when camera goes into the DP
  //Material set up
-  GLfloat mKa[] = { 0.0, 0.0, 0.0, 0.5 };
-  GLfloat mKd[] = { 0.6, 0.2, 0.2, 0.5 };
-  GLfloat mKs[] = { 1.0, 1.0, 1.0, 0.5 };
-  GLfloat mKe[] = { 0.0, 0.0, 0.0, 0.5 };
+  GLfloat mKa[] = { 0.0, 0.0, 0.0, 0.0 };
+  GLfloat mKd[] = { 0.6, 0.2, 0.2, 0.3 };
+  GLfloat mKs[] = { 1.0, 1.0, 1.0, 0.3 };
+  GLfloat mKe[] = { 0.0, 0.0, 0.0, 0.3 };
 
   glMaterialfv(GL_FRONT, GL_AMBIENT, mKa);
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mKd);
@@ -434,3 +434,34 @@ void TMesh::SetDispersivePrism(float height, float side){
   tris[i++] = 17;
   tris[i++] = 14;
 }
+
+void TMesh::TranslateDown(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointDown(units);
+	 }
+ }
+ void TMesh::TranslateUp(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointUp(units);
+	 }
+  }
+ void TMesh::TranslateLeft(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointLeft(units);
+	 }
+  }
+ void TMesh::TranslateRight(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointRight(units);
+	 }
+  }
+ void TMesh::TranslateForward(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointFoward(units);
+	 }
+  }
+ void TMesh::TranslateBackward(float units){
+	 for(int i=0; i<vertsN; i++){
+		 verts[i]= verts[i].TranslateThisPointBackward(units);
+	 }
+  }

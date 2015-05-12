@@ -25,6 +25,12 @@ public:
   friend ostream& operator<<(ostream& ostr, V3 v);
   V3 RotateThisPointAboutAxis(V3 O, V3 a, float theta);
   V3 RotateThisVectorAboutAxis(V3 a, float theta);
+  V3 TranslateThisPointDown(float units);
+  V3 TranslateThisPointUp(float units);
+  V3 TranslateThisPointLeft(float units);
+  V3 TranslateThisPointRight(float units);
+  V3 TranslateThisPointFoward(float units);
+  V3 TranslateThisPointBackward(float units);
 };
 
 class AABB {
